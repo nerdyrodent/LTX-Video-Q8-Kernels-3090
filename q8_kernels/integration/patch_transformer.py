@@ -15,7 +15,9 @@ def tree_convert_bf16(module: torch.nn.Module, linear_cls):
         tree_convert_bf16(child, linear_cls)
 
 
-def patch_comfyui_native_transformer(transformer, use_fp8_attention=False):
+def patch_comfyui_native_transformer(
+    transformer, use_fp8_attention=False, transform_weights=True
+):
 
     from .comfyui_native import create_forwards, cross_attn_forward
 
@@ -37,8 +39,14 @@ def patch_comfyui_native_transformer(transformer, use_fp8_attention=False):
                 for part in parent_path:
                     parent = getattr(parent, part)
 
-                setattr(parent, child_name, linear_cls.from_linear(module, True))
-                del module
+                setattr(
+                    parent,
+                    child_name,
+                    linear_cls.from_linear(module, transform_weights),
+                )
+                del module.weight
+                del module.bias
+                torch.cuda.empty_cache()
 
     for block in transformer.transformer_blocks:
         block.forward = types.MethodType(fused_forward, block)
