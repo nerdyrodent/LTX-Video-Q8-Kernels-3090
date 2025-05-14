@@ -128,12 +128,9 @@ class FP8Linear(nn.Module):
             use_hadamard=use_hadamard,
             device=linear.weight.device,
         )
-        is_quantized = linear.weight.data.dtype == torch.float8_e4m3fn
         if use_hadamard:
-            w_fp8, _ = (
-                quantize_hadamard(linear.weight.data.cuda(), torch.torch.float8_e4m3fn)
-                if not is_quantized
-                else (linear.weight.data, None)
+            w_fp8, _ = quantize_hadamard(
+                linear.weight.data.cuda().to(torch.bfloat16), torch.torch.float8_e4m3fn
             )
         else:
             w_fp8 = linear.weight.data.to(torch.float8_e4m3fn)

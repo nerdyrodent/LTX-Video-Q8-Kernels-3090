@@ -1,12 +1,10 @@
 import torch
 from einops import rearrange
 
-from ..functional.ops import (
-    gelu_hadamard_transform,
-    norm_scale_shift_hadamard_transform,
-    rms_norm_rope,
-)
-from .utils import get_compute_dtype
+from ..functional.ops import (gelu_hadamard_transform,
+                              norm_scale_shift_hadamard_transform,
+                              rms_norm_rope)
+from .utils import get_attention_func, get_compute_dtype
 
 
 def _feta_score(query_image, key_image, head_dim, num_frames, enhance_weight):
@@ -60,9 +58,6 @@ def get_feta_scores(img_q, img_k, num_heads, transformer_options):
     )
     weight = transformer_options.get("feta_weight", 0)
     return _feta_score(query_image, key_image, head_dim, num_frames, weight)
-
-
-from .utils import get_attention_func
 
 
 def cross_attn_forward(use_fp8_attention):
@@ -124,7 +119,7 @@ def cross_attn_forward(use_fp8_attention):
                     if len(inject_settings) > 0:
                         inj = attn_bank["block_map"][self.idx][step_idx]
                         inj_vals = inj[0].to(x.device).repeat(len_conds, 1, 1)
-                        if inj_scales is not None:
+                        if inj[1] is not None:
                             inj_scales = inj[1].to(x.device).repeat(len_conds, 1)
 
                     if "q" in inject_settings:

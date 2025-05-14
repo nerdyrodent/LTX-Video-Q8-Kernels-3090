@@ -163,7 +163,7 @@ if should_compile_fp8_fast_acc:
 
 setup(
     name=PACKAGE_NAME,
-    version="0.0.4",
+    version="0.0.5",
     packages=find_packages(
         exclude=(
             "build",
@@ -181,14 +181,15 @@ setup(
     python_requires=">=3.7",
     install_requires=[
         "torch",
-        "einops",
+        "wheel",
         "packaging",
         "ninja",
+        "setuptools",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",
         "Operating System :: Unix",
     ],
-    author="KONAKONA666/Aibek Bekbayev (2025 Lightricks Ltd.)",
+    author="KONAKONA666/Aibek Bekbayev",
 )
