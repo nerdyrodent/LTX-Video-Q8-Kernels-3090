@@ -74,13 +74,12 @@ class Q8Linear(nn.Module):
         if linear.weight.data.dtype == torch.int8:
             w_quant, w_scale = linear.weight.data, linear.scales.data
         else:
-            w_quant, w_scale = quantize_hadamard(linear.weight.data.cuda(), torch.int8)
+            w_quant, w_scale = quantize_hadamard(linear.weight.data.cuda().to(torch.bfloat16), torch.int8)
         layer.weight.data = w_quant
-        layer.scales.data = w_scale
+        layer.scales.data = w_scale.cuda()  # Ensure scales are on CUDA
         if linear.bias is not None:
-            layer.bias.data = linear.bias.data.float()
+            layer.bias.data = linear.bias.data.float().cuda()  # Ensure bias is on CUDA
         return layer
-
 
 class FP8Linear(nn.Module):
     def __init__(
