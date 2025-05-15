@@ -1,3 +1,11 @@
+### 3090 Test Version ###
+Having experienced the same error as issue #1 [https://github.com/Lightricks/LTX-Video-Q8-Kernels/issues/1](https://github.com/Lightricks/LTX-Video-Q8-Kernels/issues/1), this version has modified utils.py and linear.py files.
+
+VRAM use in ComfyUI seems to be anywhere between 16GB and 22GB, depending on what it's doing, with speeds of roughly 1it/s
+
+Can't say if I'm doing it properly, but as it's now running I've stopped changing things.
+
+The original README follows:
 
 ### LTXVideo Q8 – `q8_kernels`
 
