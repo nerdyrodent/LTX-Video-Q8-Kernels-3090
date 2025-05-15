@@ -33,10 +33,13 @@ def is_fp8_attention_available():
     except ImportError:
         return False
 
-
 def get_attention_func(use_fp8_attention=False):
     device_arch = get_device_arch()
     use_default = False
+    self_attn_func = torch.nn.functional.scaled_dot_product_attention  # Assign a default value
+    self_attn_memory_layout = lambda x: x.transpose(1, 2)           # Assign a default value
+    out_tuple = False
+
     if device_arch == "hopper":
         if use_fp8_attention:
             assert (
